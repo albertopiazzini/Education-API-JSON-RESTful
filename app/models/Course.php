@@ -17,7 +17,7 @@ class Course
 
             $query = "SELECT *,
         (SELECT JSON_ARRAYAGG(s.name) FROM Subjects s WHERE s.id_subject IN
-            (SELECT cs.id_subject FROM CourseSubject cs WHERE cs.id_course = Courses.id)
+            (SELECT cs.id_subject FROM CourseSubject cs WHERE cs.id_course = Courses.id_course)
         ) AS subjects
         FROM Courses";
 
@@ -33,14 +33,19 @@ class Course
                     $conditions[] = "name LIKE ?";
                     $query_params_temp[] = "%$value%";
                 } elseif ($key === 'id') {
-                    $conditions[] = "id LIKE ?";
+                    $conditions[] = "id_course LIKE ?";
                     $query_params_temp[] = "%$value%";
                 } elseif ($key === 'places_available') {
                     $conditions[] = "places_available >= ?";
                     $query_params_temp[] = $value;
+
                 } elseif ($key === 'subjects') {
-                    $subQuery = "SELECT id_course FROM CourseSubject WHERE id_subject IN (" . implode(',', array_fill(0, count($value), '?')) . ")";
-                    $conditions[] = "id IN ($subQuery)";
+
+                    $value= array_map('explode', array_fill(0, count($value), ','),$value);
+                    $value= array_merge(...$value);
+                    $subQuery = "SELECT id_course FROM CourseSubject WHERE id_subject IN (" . implode(',', array_fill(0, count($value), '?')) . ") 
+                    GROUP BY id_course HAVING COUNT(DISTINCT id_subject) = " . count($value);
+                    $conditions[] = "id_course IN ($subQuery)";
                     $query_params_temp = array_merge($query_params_temp, $value);
                 }
             }
@@ -128,7 +133,7 @@ class Course
 
         $query = ' UPDATE Courses SET 
         name = :newname, places_available = :new_places_available
-        WHERE id = :id
+        WHERE id_course = :id
         ';
 
         $stmt =  $this->pdo->prepare($query);
@@ -161,7 +166,7 @@ class Course
 
 
     function delete($id) {
-        $query = ' DELETE from Courses WHERE id = :id';
+        $query = ' DELETE from Courses WHERE id_course = :id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':id', $id);
 
@@ -175,7 +180,7 @@ class Course
 
     function exists ($id) {
         $stmt = $this->pdo->prepare('SELECT COUNT(*) FROM Courses 
-        WHERE id = ?');
+        WHERE id_course = ?');
         $stmt->execute([$id]);
         $count = $stmt->fetchColumn();
         return $count > 0;
