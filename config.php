@@ -1,7 +1,7 @@
 <?php
 
 //// This file returns credentials to log into the db
-
+/*
 return  $config = [
     
         'name' => 'Owly',
@@ -13,3 +13,19 @@ return  $config = [
         ]
     ]
     ;
+
+    */
+
+    require __DIR__ . '/vendor/autoload.php';
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
+return [
+    'name' => getenv('DB_NAME'),
+    'username' => getenv('DB_USERNAME'),
+    'password' => getenv('DB_PASSWORD'),
+    'connection' => getenv('DB_CONNECTION'),
+    'options' => [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING
+    ]
+];
