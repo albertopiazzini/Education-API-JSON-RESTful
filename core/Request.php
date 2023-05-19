@@ -10,7 +10,6 @@ class Request {
 
     function getPath() {
         
-        // return basename($_SERVER['REQUEST_URI']);    
         $url = $_SERVER['REQUEST_URI'];
         $path = parse_url($url, PHP_URL_PATH);
         $base_path = substr($path, strpos($path, 'index.php/') + strlen('index.php/'));
@@ -22,6 +21,8 @@ class Request {
        return json_decode(file_get_contents('php://input'), true);
     }
 
+
+
     function getQueryParams() {
         $queryParams = array();
         $queryStr = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY);
@@ -29,8 +30,7 @@ class Request {
             parse_str($queryStr,$queryParams);
         }
         
-        // echo "Query params: ";
-        // print_r($queryParams);
+        
         return $queryParams;
     }
 

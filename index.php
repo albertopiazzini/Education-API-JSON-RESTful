@@ -6,6 +6,7 @@ error_reporting(E_ALL);
 
 
 
+require __DIR__.'/vendor/autoload.php';
 
 $config = require 'config.php';
 include_once 'core/Router.php';
@@ -20,6 +21,8 @@ $router = new Router;
 $router->load($routes);
 
 $router->direct($request->getPath(), $request->getMethod());
+
+
 
 
 
