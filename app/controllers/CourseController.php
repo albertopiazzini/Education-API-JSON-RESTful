@@ -4,7 +4,7 @@
 
 class CourseController {
 
-    public function read() {
+    public function read($routeParams=null) {
 
         
         $this->setHeaders('GET');
@@ -14,6 +14,10 @@ class CourseController {
         
         $course= $req['course'];
         $params = $req['params'];
+        if($routeParams) {
+            $params['id']=$routeParams['id'];
+
+        }
 
         $recordset = $course->select($params);
         
@@ -28,7 +32,8 @@ class CourseController {
         
     }
 
-
+//// Subjects array with their id not name, if some id_subject doesn't exist in the DB it show error 
+// and craeate the course only with subjects that exists
     function create() {
         $this->setHeaders('POST');
 
@@ -53,7 +58,7 @@ class CourseController {
     }
 
 
-    function update() {
+    function update($routeParams) {
 
         $this->setHeaders('PUT');
 
@@ -61,7 +66,7 @@ class CourseController {
 
         $course= $req['course'];
         $data= $req['data'];
-        $id= $_GET['id'];
+        $id= $routeParams['id'];
 
         if (!$id) {
             http_response_code(400);
@@ -88,13 +93,13 @@ class CourseController {
 
 
 
-    function delete() {
-        $this->setHeaders('PUT');
+    function delete($routeParams) {
+        $this->setHeaders('DELETE');
 
         $req = $this->startDb();
 
         $course= $req['course'];
-        $id= $_GET['id'];
+        $id= $routeParams['id'];
 
         if (!$id) {
             http_response_code(400);
@@ -145,6 +150,7 @@ class CourseController {
         $request = new Request;
         $data = $request->getBody();
         $params = $request->getQueryParams();
+        
         
           
 

@@ -4,7 +4,7 @@ class SubjectController
 {
 
 
-    function read () {
+    function read ($routeParams=null) {
           
         $this->setHeaders('GET');
 
@@ -15,13 +15,14 @@ class SubjectController
         
         
 
-        $recordset = $subject->selectAll();
+        $recordset = $subject->read($routeParams);
         
 
         if ($recordset !== false) {
             http_response_code(201);
             echo json_encode($recordset);
-        } else {
+        } 
+        else {
             http_response_code(404);
             echo json_encode(array("message" => "No subjects found."));
         }
@@ -50,7 +51,7 @@ class SubjectController
         }
     }
 
-    function update() {
+    function update($routeParams) {
 
         $this->setHeaders('PUT');
 
@@ -58,7 +59,7 @@ class SubjectController
 
         $subject= $req['subject'];
         $data= $req['data'];
-        $id = $_GET['id'];
+        $id = $routeParams['id'];
 
         if (!$id) {
             http_response_code(400);
@@ -83,15 +84,14 @@ class SubjectController
         
     }
 
-    function delete () {
+    function delete ($routeParams) {
 
         $this->setHeaders('DELETE');
 
         $req = $this->startDb();
 
         $subject= $req['subject'];
-        $data= $req['data'];
-        $id = $_GET['id'];
+        $id = $routeParams['id'];
 
         if (!$id) {
             http_response_code(400);

@@ -1,26 +1,30 @@
 <?php
 
+
 return $routes = [
     'GET' => [
         'courses' => 'CourseController@read',
-        'subjects' => 'SubjectController@read'
+        'courses/{id:\d+}' => 'CourseController@read',
+        'subjects' => 'SubjectController@read',
+        'subjects/{id:\d+}' => 'SubjectController@read'
+
     ],
     'POST' => [
         'courses' => 'CourseController@create',
         'subjects' => 'SubjectController@create'
-
     ],
     'PUT' => [
-        'courses' => 'CourseController@update',
-        'subjects' => 'SubjectController@update'
+        'courses/{id:\d+}' => 'CourseController@update',
+
+        'subjects/{id:\d+}' => 'SubjectController@update',
 
     ],
-
     'DELETE' => [
-        'courses' => 'CourseController@delete',
-        'subjects' => 'SubjectController@delete'
+        'courses/{id:\d+}' => 'CourseController@delete',
+
+        'subjects/{id:\d+}' => 'SubjectController@delete',
 
     ]
+];
 
-  
-    ]; 
+

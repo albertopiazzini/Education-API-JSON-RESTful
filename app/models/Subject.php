@@ -11,16 +11,30 @@ class Subject
     }
 
 
-    function selectAll() {
-        $query = "SELECT * FROM Subjects";
+    function read($routeParams)
+    {
+        if ($routeParams !== null) {
+            $id = $routeParams['id'];
+            $query = "SELECT * FROM Subjects WHERE id_subject = :id";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        } else {
+            $query = "SELECT * FROM Subjects";
+            $stmt = $this->pdo->prepare($query);
+        }
+    
+        $stmt->execute();
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        $stmt= $this->pdo->prepare($query);
+        if (empty($data)) {
+            return "No Subject found with id {$id}";
 
-        $stmt->execute(); 
-
-        return $data =  $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+        } else {
+            return $data;
+        }
+    
     }
+    
 
     function create(array $data) {
 
